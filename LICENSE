@@ -1,0 +1,87 @@
+Relvyn Proprietary Source Code License
+Version 1.0-draft, 2026-08-04
+
+Copyright © 2026 Frank Shi. All rights reserved.
+
+IMPORTANT: This document is a project draft and has not been reviewed by a
+lawyer. The licensor's legal entity, contact address, governing law, and
+dispute forum remain [TO BE CONFIRMED].
+
+1. Scope and ownership
+
+This license applies to the original source code, user interface, brand assets,
+and original documentation of Relvyn (the “Project”) for which Frank Shi owns
+or is authorized to license the relevant rights. It does not claim ownership
+of third-party components, their notices, or contributions whose licensing
+authority has not been confirmed. Any prior product name or internal
+compatibility identifier does not grant any separate license.
+
+The Project is proprietary software. Except for the limited GitHub platform
+permissions described below and rights expressly granted in a separate written
+agreement, no copyright or other intellectual-property license is granted.
+
+2. No implied permission
+
+Without prior written authorization from the applicable rights holder, you may
+not copy, modify, create derivative works from, redistribute, publish, sell,
+resell, sublicense, commercially host, or provide the Project as software as a
+service or a managed service. You may not remove or obscure notices, represent
+an unofficial build as an official Relvyn release, or use the source code to
+offer a competing commercial distribution.
+
+Making a repository publicly visible on GitHub does not make it open source and
+does not grant permission for commercial use. Permissions necessarily granted
+through GitHub's Terms of Service to view and fork a public repository and to
+reproduce its contents through the GitHub service are limited to that service.
+They do not by themselves authorize copying, publishing, selling, hosting, or
+commercially using the Project outside those platform functions.
+
+3. Binary releases and end-user use
+
+Use of an officially distributed binary release is governed by EULA.md and the
+license rules applicable to that release, including any free, trial, or paid
+entitlements. Possession of a binary does not grant access to, ownership of, or
+permission to redistribute the source code.
+
+4. Third-party material
+
+Third-party components remain governed by their own licenses. Those licenses
+and required notices are indexed in THIRD_PARTY_NOTICES.md and under
+licenses/third-party/. Nothing in this license restricts any right granted by a
+third-party license or replaces a third-party notice. If this license conflicts
+with a third-party license for that component, the third-party license controls
+for that component.
+
+5. Brand and trademarks
+
+No license to the Relvyn name, logo, product identity, domain names, or other
+source identifiers is granted except the limited nominative use needed to
+identify an official copy. Software-use permission is not trademark permission.
+
+6. Disclaimer
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE PROJECT AND ANY SOURCE
+CODE MADE AVAILABLE FOR INSPECTION ARE PROVIDED “AS IS” AND “AS AVAILABLE,”
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EXPRESS OR IMPLIED. RIGHTS THAT
+CANNOT LAWFULLY BE EXCLUDED ARE NOT EXCLUDED.
+
+7. Termination
+
+Any permission expressly granted under this document terminates automatically
+if its conditions are materially breached and the breach is not cured where
+applicable law requires a cure opportunity. Termination does not limit remedies
+available under applicable law and does not terminate rights independently
+granted by third-party licenses.
+
+8. Commercial licensing
+
+Commercial distribution, OEM arrangements, redistribution rights, hosted use,
+and source-code licensing require a separate written agreement with the
+applicable rights holder. Contact: [TO BE CONFIRMED].
+
+9. Governing terms
+
+Licensor/legal entity: [TO BE CONFIRMED]
+Contact email: [TO BE CONFIRMED]
+Governing law: [TO BE CONFIRMED]
+Dispute resolution and forum: [TO BE CONFIRMED]
