@@ -6,6 +6,8 @@
   product descriptors.
 - Renamed the Windows application, installer, WhatsApp companion, macOS bundle,
   PWA metadata, icons, shortcuts, and public update assets.
+- Includes the v5.18.6 platform-neutral Customer Success Agent, knowledge-base
+  headings, and compatibility migration without overwriting custom personas.
 - Preserved legacy data, credential, single-instance, and updater identities
   internally so an approved transition release can upgrade existing users.
 - Added the proprietary project license, EULA, privacy notice, third-party
