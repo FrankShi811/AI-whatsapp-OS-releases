@@ -1,7 +1,9 @@
 # Installers
 
-Approved Relvyn installers will be attached to GitHub Releases and may be
-mirrored here only when the distribution compliance gate passes.
+Approved Relvyn installers are attached to GitHub Releases only after the
+private build gates and public distribution attestation workflow pass. Local QA
+builds must not be uploaded here.
 
-No installer is published at present. Local QA builds are not commercial
-releases and must not be uploaded to this repository.
+The compatibility Windows entry is `AI.Sales.OS.Setup.exe`. Its historical
+name is intentionally retained for old portable updaters; product-facing
+branding remains Relvyn.

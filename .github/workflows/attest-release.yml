@@ -1,0 +1,163 @@
+name: Validate, attest and publish Relvyn release
+
+on:
+  repository_dispatch:
+    types: [relvyn-release-candidate]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Existing draft release version to retry
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+  artifact-metadata: write
+
+concurrency:
+  group: relvyn-public-release-${{ github.event.client_payload.version || inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  attest-release:
+    name: Audit exact bytes, attest, self-verify and publish
+    runs-on: windows-latest
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+      CANDIDATE_VERSION: ${{ github.event.client_payload.version || inputs.version }}
+      SOURCE_RUN_ID: ${{ github.event.client_payload.sourceRunId }}
+    steps:
+      - name: Check out public distribution controls only
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Download the existing immutable draft candidate
+        shell: pwsh
+        run: |
+          if ($env:CANDIDATE_VERSION -notmatch '^\d+\.\d+\.\d+$') { throw "Invalid candidate version: $env:CANDIDATE_VERSION" }
+          $tag = "v$env:CANDIDATE_VERSION"
+          $release = gh release view $tag --repo '${{ github.repository }}' --json isDraft,isPrerelease,tagName | ConvertFrom-Json
+          if (-not $release.isDraft -or $release.isPrerelease -or $release.tagName -ne $tag) {
+            throw 'Attestation only processes an exact draft candidate; published assets are immutable.'
+          }
+          New-Item -ItemType Directory -Force candidate | Out-Null
+          gh release download $tag --repo '${{ github.repository }}' --dir candidate
+          if ($LASTEXITCODE -ne 0) { throw 'Unable to download draft candidate assets.' }
+
+      - name: Public artifact audit, secret scan and digest validation
+        shell: pwsh
+        run: |
+          .\scripts\test-release-candidate.ps1 `
+            -Version $env:CANDIDATE_VERSION `
+            -CandidateDirectory candidate `
+            -ExpectedRepository '${{ github.repository }}' `
+            -ExpectedBuildRunId $env:SOURCE_RUN_ID
+
+      - name: Build the exact high-value attestation subject list
+        shell: pwsh
+        run: |
+          $manifest = Get-Content -Raw -Encoding utf8 candidate/relvyn-release-manifest.json | ConvertFrom-Json
+          $subjectNames = @($manifest.artifacts | Where-Object { $_.attest -eq $true } | ForEach-Object name)
+          $subjectNames += 'relvyn-release-manifest.json'
+          $checksumLines = Get-Content -Encoding utf8 candidate/SHA256SUMS.txt
+          $subjects = foreach ($name in $subjectNames | Sort-Object -Unique) {
+            $line = @($checksumLines | Where-Object { $_ -match "^[0-9a-f]{64} [ *]$([Regex]::Escape($name))$" })
+            if ($line.Count -ne 1) { throw "Attestation subject is not uniquely covered by SHA256SUMS: $name" }
+            $line[0]
+          }
+          [IO.File]::WriteAllLines('candidate/ATTESTATION-SUBJECTS.txt', $subjects, [Text.UTF8Encoding]::new($false))
+          Write-Host "High-value attestation subjects: $($subjects.Count)"
+
+      - name: Attest all manifest-bound release subjects
+        id: release-attestation
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-checksums: candidate/ATTESTATION-SUBJECTS.txt
+
+      - name: Attest the checksum index itself
+        id: checksum-attestation
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: candidate/SHA256SUMS.txt
+
+      - name: Self-verify every attestation against this repository
+        shell: pwsh
+        run: |
+          foreach ($line in Get-Content -LiteralPath candidate/ATTESTATION-SUBJECTS.txt -Encoding utf8) {
+            if ($line -notmatch '^(?<Hash>[0-9a-f]{64}) [ *](?<Name>[^\\/]+)$') { throw "Invalid checksum line: $line" }
+            $path = Join-Path candidate $Matches.Name
+            gh attestation verify $path -R '${{ github.repository }}'
+            if ($LASTEXITCODE -ne 0) { throw "Attestation verification failed: $($Matches.Name)" }
+          }
+          gh attestation verify candidate/SHA256SUMS.txt -R '${{ github.repository }}'
+          if ($LASTEXITCODE -ne 0) { throw 'Checksum-index attestation verification failed.' }
+
+      - name: Re-download the draft and close the publish-time byte gap
+        shell: pwsh
+        run: |
+          $tag = "v$env:CANDIDATE_VERSION"
+          $release = gh release view $tag --repo '${{ github.repository }}' --json isDraft,isPrerelease | ConvertFrom-Json
+          if (-not $release.isDraft -or $release.isPrerelease) { throw 'Candidate changed state before final-byte verification.' }
+          New-Item -ItemType Directory -Force prepublish | Out-Null
+          gh release download $tag --repo '${{ github.repository }}' --dir prepublish
+          if ($LASTEXITCODE -ne 0) { throw 'Unable to re-download the draft immediately before publication.' }
+          $localEvidenceNames = @('public-release-audit.json', 'ATTESTATION-SUBJECTS.txt')
+          $expectedNames = @(Get-ChildItem -LiteralPath candidate -File | Where-Object Name -notin $localEvidenceNames | ForEach-Object Name | Sort-Object)
+          $actualNames = @(Get-ChildItem -LiteralPath prepublish -File | ForEach-Object Name | Sort-Object)
+          if (($expectedNames -join "`n") -ne ($actualNames -join "`n")) { throw 'Remote draft asset allowlist changed after audit.' }
+          foreach ($line in Get-Content -LiteralPath candidate/SHA256SUMS.txt -Encoding utf8) {
+            if ($line -notmatch '^(?<Hash>[0-9a-f]{64}) [ *](?<Name>[^\\/]+)$') { throw "Invalid checksum line: $line" }
+            $actual = (Get-FileHash -LiteralPath (Join-Path prepublish $Matches.Name) -Algorithm SHA256).Hash.ToLowerInvariant()
+            if ($actual -ne $Matches.Hash) { throw "Remote draft bytes changed after attestation: $($Matches.Name)" }
+          }
+          $checksumHash = (Get-FileHash -LiteralPath prepublish/SHA256SUMS.txt -Algorithm SHA256).Hash
+          $auditedChecksumHash = (Get-FileHash -LiteralPath candidate/SHA256SUMS.txt -Algorithm SHA256).Hash
+          if ($checksumHash -ne $auditedChecksumHash) { throw 'Remote checksum index changed after attestation.' }
+          Write-Host 'PASS final remote draft bytes equal the audited and attested bytes'
+
+      - name: Publish Stable only after all gates pass
+        shell: pwsh
+        run: |
+          $tag = "v$env:CANDIDATE_VERSION"
+          $existingNotes = gh release view $tag --repo '${{ github.repository }}' --json body --jq .body
+          $integrity = @'
+
+          ## Release Integrity
+
+          SHA-256 checksums are included in `SHA256SUMS.txt`.
+
+          GitHub Artifact Attestations are generated and self-verified for the official Relvyn release binaries and release manifest in this public distribution workflow. This proves the identity and integrity of this publication workflow's exact artifacts; it is not cryptographic proof of the private build workflow.
+
+          Relvyn does not currently have a Windows Authenticode publisher certificate. Windows SmartScreen may still show an Unknown Publisher warning. Attestation is not a malware or license-compliance guarantee.
+
+          Technical verification: `gh attestation verify FILE -R ${{ github.repository }}`
+          '@
+          [IO.File]::WriteAllText('release-notes.md', ($existingNotes.TrimEnd() + $integrity), [Text.UTF8Encoding]::new($false))
+          gh release edit $tag --repo '${{ github.repository }}' --notes-file release-notes.md --draft=false --latest
+          if ($LASTEXITCODE -ne 0) { throw 'Unable to publish the verified Stable release.' }
+          $immutable = $false
+          for ($attempt = 1; $attempt -le 10; $attempt++) {
+            $immutable = (gh api "repos/${{ github.repository }}/releases/tags/$tag" --jq .immutable) -eq 'true'
+            if ($immutable) { break }
+            Start-Sleep -Seconds 3
+          }
+          if (-not $immutable) { throw 'Stable release was published without the repository immutable-release guarantee.' }
+          Write-Host "Release Version: $env:CANDIDATE_VERSION"
+          Write-Host "Attestation Result: PASS"
+          Write-Host "Attestation Repository: ${{ github.repository }}"
+          Write-Host "Release Attestation: ${{ steps.release-attestation.outputs.attestation-url }}"
+          Write-Host "Checksum Attestation: ${{ steps.checksum-attestation.outputs.attestation-url }}"
+          Write-Host "Verification Command: gh attestation verify FILE -R ${{ github.repository }}"
+          Write-Host 'Immutable Release: PASS'
+
+      - name: Retain public audit evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: Relvyn-${{ env.CANDIDATE_VERSION }}-public-release-audit
+          path: |
+            candidate/public-release-audit.json
+            candidate/ATTESTATION-SUBJECTS.txt
+          if-no-files-found: error
+          retention-days: 90
