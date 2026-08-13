@@ -9,17 +9,20 @@ release notes, legal documents, update manifests, and approved binary
 installers. It does not contain the proprietary source code or internal build
 documentation.
 
-## Distribution status
+## Download latest
 
-Commercial binary publication is currently **paused by the compliance release
-gate**. No installer or update manifest is published until the open copyleft
-dependency and brand-asset provenance issues are resolved and documented.
-Passing engineering tests does not override that gate.
+Download Relvyn only from this repository's **Releases** page. Windows uses a
+simplified-Chinese installer and keeps its existing Velopack automatic-update
+experience. The release feed, installer and packages are published together;
+ordinary users do not need GitHub CLI or a checksum tool before installing.
 
-When an approved release is available, users should download it only from this
-repository's **Releases** page. The automated update feed and its referenced
-packages will be published together so installed clients can verify and fetch
-the same release chain.
+The proprietary application is built and tested in the authoritative private
+source repository. This public repository only receives an immutable draft
+candidate, validates the approved asset list and SHA-256 manifest, scans for
+source/secret leakage, creates GitHub Artifact Attestations, verifies them, and
+then publishes the Stable release. It never compiles the proprietary source.
+Immutable releases are enabled for this repository, so future Stable tags and
+assets cannot be modified after publication.
 
 ## Repository layout
 
@@ -31,6 +34,31 @@ the same release chain.
 - `THIRD_PARTY_NOTICES.md` and `licenses/third-party/` — dependency notices and
   exact license-text snapshots.
 - `LICENSE` — proprietary project copyright and source-license notice.
+
+## Security / verify download
+
+Every Stable release includes `SHA256SUMS.txt` and
+`relvyn-release-manifest.json`. To verify a downloaded installer in Windows
+PowerShell:
+
+```powershell
+Get-FileHash ".\AI.Sales.OS.Setup.exe" -Algorithm SHA256
+```
+
+Compare the result with the matching line in `SHA256SUMS.txt`. Technical users
+can also verify the public publication provenance with GitHub CLI:
+
+```powershell
+gh attestation verify ".\AI.Sales.OS.Setup.exe" `
+  -R FrankShi811/AI-whatsapp-OS-releases
+```
+
+GitHub Artifact Attestation confirms the repository/workflow identity and
+integrity of the exact public release artifact. It does **not** prove the
+private build workflow, replace a Windows Authenticode certificate, guarantee
+that software is malware-free, or resolve license compliance. Relvyn currently
+has no Windows publisher certificate, so Microsoft Defender SmartScreen may
+still show an Unknown Publisher warning.
 
 ## Legacy update compatibility
 
