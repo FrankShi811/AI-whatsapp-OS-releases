@@ -1,3 +1,48 @@
 {
-  "Assets": []
+  "Assets": [
+    {
+      "PackageId": "AISalesOS",
+      "Version": "7.14.3",
+      "Type": "Full",
+      "FileName": "https://github.com/FrankShi811/AI-whatsapp-OS-releases/releases/download/v7.14.3/AISalesOS-7.14.3-full.nupkg",
+      "SHA1": "8E08380CA461CB9F3A68176929A888DAD820D31A",
+      "SHA256": "D89A9508C655C4C53327AF937E8B560696118CE67BB279CBB941E7EE94865474",
+      "Size": 152817082,
+      "NotesMarkdown": "# AI Sales OS v7.14.3\n\n## 取消更新分层：所有用户发布即可用\n\n- **不再等待 14 天**：7.13.0–7.14.2 期间免费用户的更新通道延迟 14 天；自本版本起所有客户端（含未激活的老用户）统一走最新通道，新版本发布即可自动更新。\n- **功能锁不变**：买断制不变——未激活只能浏览界面与本地数据，WhatsApp 收发、AI 分析、自动化触达、MCP 执行、导出等功能需邀请码激活后使用；买断码永久有效，评测码到期或邀请码作废自动重新锁定功能，本地数据永远可读。\n- **设置文案**：「许可与更新通道」更名为「许可与激活」，许可状态与提示文案同步去掉通道表述。\n\n## 技术边界\n\n- 更新器移除 win-stable 稳定通道分叉与付费通道领先提示；所有客户端固定读取 `releases/latest/download/releases.win.json`。\n- 作废清单 `license-revocations.json` 仍随每次发布分发，查更新时刷新本地缓存，驱动功能锁生命周期（作废/到期回锁），与更新通道无关。\n- 发布仓 stable feed（`stable-channel/releases.win-stable.json`）在本版本发布后做最后一次同步供老客户端桥接，随后冻结，`stable-channel-sync.yml` 下线。\n\n## 老用户升级\n\n- 客户数据、WhatsApp 会话、登录状态、AI 配置与自动更新机制均保持原样；唯一变化是未激活用户也能立即收到新版本（功能锁政策不变）。",
+      "NotesHTML": "<h1>AI Sales OS v7.14.3</h1>\n<h2>取消更新分层：所有用户发布即可用</h2>\n<ul>\n<li><strong>不再等待 14 天</strong>：7.13.0–7.14.2 期间免费用户的更新通道延迟 14 天；自本版本起所有客户端（含未激活的老用户）统一走最新通道，新版本发布即可自动更新。</li>\n<li><strong>功能锁不变</strong>：买断制不变——未激活只能浏览界面与本地数据，WhatsApp 收发、AI 分析、自动化触达、MCP 执行、导出等功能需邀请码激活后使用；买断码永久有效，评测码到期或邀请码作废自动重新锁定功能，本地数据永远可读。</li>\n<li><strong>设置文案</strong>：「许可与更新通道」更名为「许可与激活」，许可状态与提示文案同步去掉通道表述。</li>\n</ul>\n<h2>技术边界</h2>\n<ul>\n<li>更新器移除 win-stable 稳定通道分叉与付费通道领先提示；所有客户端固定读取 <code>releases/latest/download/releases.win.json</code>。</li>\n<li>作废清单 <code>license-revocations.json</code> 仍随每次发布分发，查更新时刷新本地缓存，驱动功能锁生命周期（作废/到期回锁），与更新通道无关。</li>\n<li>发布仓 stable feed（<code>stable-channel/releases.win-stable.json</code>）在本版本发布后做最后一次同步供老客户端桥接，随后冻结，<code>stable-channel-sync.yml</code> 下线。</li>\n</ul>\n<h2>老用户升级</h2>\n<ul>\n<li>客户数据、WhatsApp 会话、登录状态、AI 配置与自动更新机制均保持原样；唯一变化是未激活用户也能立即收到新版本（功能锁政策不变）。</li>\n</ul>"
+    },
+    {
+      "PackageId": "AISalesOS",
+      "Version": "7.14.3",
+      "Type": "Delta",
+      "FileName": "https://github.com/FrankShi811/AI-whatsapp-OS-releases/releases/download/v7.14.3/AISalesOS-7.14.3-delta.nupkg",
+      "SHA1": "B2DB5417D950735B183D1E10EC76C75D9E303CF6",
+      "SHA256": "EA0414D53606349C9056696B96C89BA71796026E59B5FE9DFB6299CE4995444A",
+      "Size": 1584115,
+      "NotesMarkdown": "# AI Sales OS v7.14.3\n\n## 取消更新分层：所有用户发布即可用\n\n- **不再等待 14 天**：7.13.0–7.14.2 期间免费用户的更新通道延迟 14 天；自本版本起所有客户端（含未激活的老用户）统一走最新通道，新版本发布即可自动更新。\n- **功能锁不变**：买断制不变——未激活只能浏览界面与本地数据，WhatsApp 收发、AI 分析、自动化触达、MCP 执行、导出等功能需邀请码激活后使用；买断码永久有效，评测码到期或邀请码作废自动重新锁定功能，本地数据永远可读。\n- **设置文案**：「许可与更新通道」更名为「许可与激活」，许可状态与提示文案同步去掉通道表述。\n\n## 技术边界\n\n- 更新器移除 win-stable 稳定通道分叉与付费通道领先提示；所有客户端固定读取 `releases/latest/download/releases.win.json`。\n- 作废清单 `license-revocations.json` 仍随每次发布分发，查更新时刷新本地缓存，驱动功能锁生命周期（作废/到期回锁），与更新通道无关。\n- 发布仓 stable feed（`stable-channel/releases.win-stable.json`）在本版本发布后做最后一次同步供老客户端桥接，随后冻结，`stable-channel-sync.yml` 下线。\n\n## 老用户升级\n\n- 客户数据、WhatsApp 会话、登录状态、AI 配置与自动更新机制均保持原样；唯一变化是未激活用户也能立即收到新版本（功能锁政策不变）。",
+      "NotesHTML": "<h1>AI Sales OS v7.14.3</h1>\n<h2>取消更新分层：所有用户发布即可用</h2>\n<ul>\n<li><strong>不再等待 14 天</strong>：7.13.0–7.14.2 期间免费用户的更新通道延迟 14 天；自本版本起所有客户端（含未激活的老用户）统一走最新通道，新版本发布即可自动更新。</li>\n<li><strong>功能锁不变</strong>：买断制不变——未激活只能浏览界面与本地数据，WhatsApp 收发、AI 分析、自动化触达、MCP 执行、导出等功能需邀请码激活后使用；买断码永久有效，评测码到期或邀请码作废自动重新锁定功能，本地数据永远可读。</li>\n<li><strong>设置文案</strong>：「许可与更新通道」更名为「许可与激活」，许可状态与提示文案同步去掉通道表述。</li>\n</ul>\n<h2>技术边界</h2>\n<ul>\n<li>更新器移除 win-stable 稳定通道分叉与付费通道领先提示；所有客户端固定读取 <code>releases/latest/download/releases.win.json</code>。</li>\n<li>作废清单 <code>license-revocations.json</code> 仍随每次发布分发，查更新时刷新本地缓存，驱动功能锁生命周期（作废/到期回锁），与更新通道无关。</li>\n<li>发布仓 stable feed（<code>stable-channel/releases.win-stable.json</code>）在本版本发布后做最后一次同步供老客户端桥接，随后冻结，<code>stable-channel-sync.yml</code> 下线。</li>\n</ul>\n<h2>老用户升级</h2>\n<ul>\n<li>客户数据、WhatsApp 会话、登录状态、AI 配置与自动更新机制均保持原样；唯一变化是未激活用户也能立即收到新版本（功能锁政策不变）。</li>\n</ul>"
+    },
+    {
+      "PackageId": "AISalesOS",
+      "Version": "7.14.2",
+      "Type": "Full",
+      "FileName": "https://github.com/FrankShi811/AI-whatsapp-OS-releases/releases/download/v7.14.2/AISalesOS-7.14.2-full.nupkg",
+      "SHA1": "F4AE9A57D93D7771076259E7B48A375B3A27A915",
+      "SHA256": "3FC155E401125DBEC0973CA4FCB251C836286C50F5FBD3D87EAE1BD49A16756B",
+      "Size": 152808326,
+      "NotesMarkdown": "# AI Sales OS v7.14.2\n\n## 搜品需求：从手动提取改为 AI 实时监控为主\n\n- **默认自动监控**：WhatsApp 新消息先过本地意图预筛（不产生 AI 调用），命中询盘特征才由 AI 做七维度结构化提取，按\"会话 × 产品\"合并累积——客户智能面板的「搜品需求」模块与「搜品需求」总收集表实时联动更新，无需再右键手动提取。\n- **老用户一次性迁移**：升级后自动识别自动开启一次；在 设置 → 客户运营 里可随时关闭，关闭后不会被再次打开。\n- **监控状态可见**：客户智能面板「搜品需求」新增监控状态行——监控中 / 已关闭 / 未配置 AI / 预算闸未开 / 本月预算已用完 / 功能未激活，自动识别为什么在跑、为什么没跑，一眼看清。\n- **花费仍受控**：自动模式只在预筛命中且 AI 分析预算闸（设置 · 客户外部调查）通过时才调用 AI；预算闸默认关闭时监控待机，不产生任何费用。\n- **手动入口保留**：消息右键「提取搜品需求」、会话头部「搜品提取」照旧可用，手动模式不走预算闸，只要求已配置 AI。\n\n## 技术边界\n\n- 监控管线复用既有 `MessageSynchronized` 事件与两阶段预筛，历史同步不触发；提取失败静默，绝不阻塞消息管线。\n- 迁移标记持久化在应用设置内，只翻转一次；预算闸判定与提取链路共用同一口径。\n\n## 老用户升级\n\n- 客户数据、WhatsApp 会话、登录状态、AI 配置与自动更新机制均保持原样；唯一的默认行为变化是搜品自动识别从关变开（可一键关回）。",
+      "NotesHTML": "<h1>AI Sales OS v7.14.2</h1>\n<h2>搜品需求：从手动提取改为 AI 实时监控为主</h2>\n<ul>\n<li><strong>默认自动监控</strong>：WhatsApp 新消息先过本地意图预筛（不产生 AI 调用），命中询盘特征才由 AI 做七维度结构化提取，按&quot;会话 × 产品&quot;合并累积——客户智能面板的「搜品需求」模块与「搜品需求」总收集表实时联动更新，无需再右键手动提取。</li>\n<li><strong>老用户一次性迁移</strong>：升级后自动识别自动开启一次；在 设置 → 客户运营 里可随时关闭，关闭后不会被再次打开。</li>\n<li><strong>监控状态可见</strong>：客户智能面板「搜品需求」新增监控状态行——监控中 / 已关闭 / 未配置 AI / 预算闸未开 / 本月预算已用完 / 功能未激活，自动识别为什么在跑、为什么没跑，一眼看清。</li>\n<li><strong>花费仍受控</strong>：自动模式只在预筛命中且 AI 分析预算闸（设置 · 客户外部调查）通过时才调用 AI；预算闸默认关闭时监控待机，不产生任何费用。</li>\n<li><strong>手动入口保留</strong>：消息右键「提取搜品需求」、会话头部「搜品提取」照旧可用，手动模式不走预算闸，只要求已配置 AI。</li>\n</ul>\n<h2>技术边界</h2>\n<ul>\n<li>监控管线复用既有 <code>MessageSynchronized</code> 事件与两阶段预筛，历史同步不触发；提取失败静默，绝不阻塞消息管线。</li>\n<li>迁移标记持久化在应用设置内，只翻转一次；预算闸判定与提取链路共用同一口径。</li>\n</ul>\n<h2>老用户升级</h2>\n<ul>\n<li>客户数据、WhatsApp 会话、登录状态、AI 配置与自动更新机制均保持原样；唯一的默认行为变化是搜品自动识别从关变开（可一键关回）。</li>\n</ul>"
+    },
+    {
+      "PackageId": "AISalesOS",
+      "Version": "7.14.2",
+      "Type": "Delta",
+      "FileName": "https://github.com/FrankShi811/AI-whatsapp-OS-releases/releases/download/v7.14.2/AISalesOS-7.14.2-delta.nupkg",
+      "SHA1": "EAD0D83BB43631DB032FAC2827ABCEB75C34B217",
+      "SHA256": "65B5B7DBD2D8B1843AC6F05EDF292BF82F433FFB8BF11BE1C05D1853F7091F05",
+      "Size": 1584915,
+      "NotesMarkdown": "# AI Sales OS v7.14.2\n\n## 搜品需求：从手动提取改为 AI 实时监控为主\n\n- **默认自动监控**：WhatsApp 新消息先过本地意图预筛（不产生 AI 调用），命中询盘特征才由 AI 做七维度结构化提取，按\"会话 × 产品\"合并累积——客户智能面板的「搜品需求」模块与「搜品需求」总收集表实时联动更新，无需再右键手动提取。\n- **老用户一次性迁移**：升级后自动识别自动开启一次；在 设置 → 客户运营 里可随时关闭，关闭后不会被再次打开。\n- **监控状态可见**：客户智能面板「搜品需求」新增监控状态行——监控中 / 已关闭 / 未配置 AI / 预算闸未开 / 本月预算已用完 / 功能未激活，自动识别为什么在跑、为什么没跑，一眼看清。\n- **花费仍受控**：自动模式只在预筛命中且 AI 分析预算闸（设置 · 客户外部调查）通过时才调用 AI；预算闸默认关闭时监控待机，不产生任何费用。\n- **手动入口保留**：消息右键「提取搜品需求」、会话头部「搜品提取」照旧可用，手动模式不走预算闸，只要求已配置 AI。\n\n## 技术边界\n\n- 监控管线复用既有 `MessageSynchronized` 事件与两阶段预筛，历史同步不触发；提取失败静默，绝不阻塞消息管线。\n- 迁移标记持久化在应用设置内，只翻转一次；预算闸判定与提取链路共用同一口径。\n\n## 老用户升级\n\n- 客户数据、WhatsApp 会话、登录状态、AI 配置与自动更新机制均保持原样；唯一的默认行为变化是搜品自动识别从关变开（可一键关回）。",
+      "NotesHTML": "<h1>AI Sales OS v7.14.2</h1>\n<h2>搜品需求：从手动提取改为 AI 实时监控为主</h2>\n<ul>\n<li><strong>默认自动监控</strong>：WhatsApp 新消息先过本地意图预筛（不产生 AI 调用），命中询盘特征才由 AI 做七维度结构化提取，按&quot;会话 × 产品&quot;合并累积——客户智能面板的「搜品需求」模块与「搜品需求」总收集表实时联动更新，无需再右键手动提取。</li>\n<li><strong>老用户一次性迁移</strong>：升级后自动识别自动开启一次；在 设置 → 客户运营 里可随时关闭，关闭后不会被再次打开。</li>\n<li><strong>监控状态可见</strong>：客户智能面板「搜品需求」新增监控状态行——监控中 / 已关闭 / 未配置 AI / 预算闸未开 / 本月预算已用完 / 功能未激活，自动识别为什么在跑、为什么没跑，一眼看清。</li>\n<li><strong>花费仍受控</strong>：自动模式只在预筛命中且 AI 分析预算闸（设置 · 客户外部调查）通过时才调用 AI；预算闸默认关闭时监控待机，不产生任何费用。</li>\n<li><strong>手动入口保留</strong>：消息右键「提取搜品需求」、会话头部「搜品提取」照旧可用，手动模式不走预算闸，只要求已配置 AI。</li>\n</ul>\n<h2>技术边界</h2>\n<ul>\n<li>监控管线复用既有 <code>MessageSynchronized</code> 事件与两阶段预筛，历史同步不触发；提取失败静默，绝不阻塞消息管线。</li>\n<li>迁移标记持久化在应用设置内，只翻转一次；预算闸判定与提取链路共用同一口径。</li>\n</ul>\n<h2>老用户升级</h2>\n<ul>\n<li>客户数据、WhatsApp 会话、登录状态、AI 配置与自动更新机制均保持原样；唯一的默认行为变化是搜品自动识别从关变开（可一键关回）。</li>\n</ul>"
+    }
+  ]
 }
