@@ -28,6 +28,7 @@ $requiredNames = @(
   'PRIVACY.md',
   'THIRD_PARTY_NOTICES.md',
   'BRIDGE_GPL_COMPLIANCE.md',
+  'license-revocations.json',
   'relvyn-release-manifest.json',
   'SHA256SUMS.txt'
 )

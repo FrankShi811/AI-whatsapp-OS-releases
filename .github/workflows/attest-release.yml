@@ -152,6 +152,14 @@ jobs:
           Write-Host "Verification Command: gh attestation verify FILE -R ${{ github.repository }}"
           Write-Host 'Immutable Release: PASS'
 
+      - name: Trigger stable channel sync
+        shell: pwsh
+        # 发布后立刻触发一次稳定通道同步：带 [SECURITY-FIX] 标记的版本可即刻进入稳定 feed，
+        # 不必等每日定时；普通版本不满 14 天不会入 feed，同步为无操作。失败由每日定时兜底。
+        run: |
+          gh api 'repos/${{ github.repository }}/dispatches' -f event_type=relvyn-release-published | Out-Null
+          if ($LASTEXITCODE -ne 0) { Write-Host 'WARNING stable channel sync dispatch failed; the daily schedule will retry.' }
+
       - name: Retain public audit evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:

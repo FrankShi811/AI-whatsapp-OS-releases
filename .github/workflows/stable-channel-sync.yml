@@ -1,0 +1,91 @@
+name: Sync stable update channel
+
+# 免费稳定通道（win-stable）feed 维护：
+# 发布满 min_age_days（默认 14 天）的版本进入稳定 feed；body 含 [SECURITY-FIX] 标记的安全修复立即进入。
+# feed 提交在仓内 stable-channel/releases.win-stable.json（本仓开了 Immutable Releases，
+# 发布后不能追加资产，稳定 feed 只能走仓内文件）；包 FileName 重写为对应 tag Release 的绝对 URL。
+on:
+  schedule:
+    - cron: '23 3 * * *'
+  workflow_dispatch:
+    inputs:
+      min_age_days:
+        description: '进入稳定通道的最小发布天数（安全修复标记 [SECURITY-FIX] 不受此限）'
+        required: false
+        default: '14'
+  repository_dispatch:
+    types: [relvyn-release-published]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: relvyn-stable-channel-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Rebuild stable channel feed
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Check out distribution repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Rebuild stable-channel/releases.win-stable.json
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $repo = '${{ github.repository }}'
+          $minAgeDays = 14
+          if ('${{ github.event.inputs.min_age_days }}' -match '^\d+$') { $minAgeDays = [int]'${{ github.event.inputs.min_age_days }}' }
+          $cutoff = (Get-Date).ToUniversalTime().AddDays(-$minAgeDays)
+
+          # 1. 本仓全部正式 release（跳过 draft / prerelease），只有在本仓有 tag release 的版本
+          #    才具备可下载的包资产；legacy 仓迁入的旧版本自然被排除。
+          $releases = gh api "repos/$repo/releases?per_page=100" | ConvertFrom-Json
+          $published = @($releases | Where-Object { -not $_.draft -and -not $_.prerelease })
+
+          # 2. 资格判定：发布满 N 天，或 body 带 [SECURITY-FIX] 立即进入（安全修复不受分层限制）。
+          $qualifying = [ordered]@{}
+          foreach ($release in $published) {
+            if ($release.tag_name -notmatch '^v(\d+\.\d+\.\d+)$') { continue }
+            $version = $Matches[1]
+            $publishedAt = [DateTimeOffset]::Parse($release.published_at)
+            $isSecurityFix = ($null -ne $release.body -and $release.body -match '\[SECURITY-FIX\]')
+            if ($publishedAt -le $cutoff -or $isSecurityFix) { $qualifying[$version] = $release.tag_name }
+          }
+          Write-Host "Qualifying stable versions: $($qualifying.Keys -join ', ')"
+
+          # 3. 以最新 release 的 win feed 为素材，筛选合格版本并把 FileName 重写为 tag 绝对 URL
+          #    （SimpleWebSource 对 http(s) FileName 直接下载，不再拼接 base）。
+          $feed = Invoke-RestMethod -Uri "https://github.com/$repo/releases/latest/download/releases.win.json"
+          $assets = @()
+          foreach ($asset in @($feed.Assets)) {
+            $version = [string]$asset.Version
+            if (-not $qualifying.Contains($version)) { continue }
+            $asset.FileName = "https://github.com/$repo/releases/download/$($qualifying[$version])/$($asset.FileName)"
+            $assets += $asset
+          }
+          $assets = @($assets | Sort-Object { try { [Version]$_.Version } catch { [Version]'0.0.0' } } -Descending)
+          $json = ([ordered]@{ Assets = $assets } | ConvertTo-Json -Depth 8)
+          New-Item -ItemType Directory -Force stable-channel | Out-Null
+          $path = 'stable-channel/releases.win-stable.json'
+          $old = if (Test-Path -LiteralPath $path) { (Get-Content -LiteralPath $path -Raw).Trim() } else { '' }
+          if ($old -eq $json.Trim()) { Write-Host 'Stable feed unchanged.'; exit 0 }
+          [IO.File]::WriteAllText($path, $json + "`n", [Text.UTF8Encoding]::new($false))
+          Write-Host "Stable feed updated: $($assets.Count) assets across $($qualifying.Count) qualifying versions."
+
+      - name: Commit and push when changed
+        shell: pwsh
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add stable-channel/releases.win-stable.json
+          git diff --cached --quiet
+          if ($LASTEXITCODE -eq 0) { Write-Host 'No changes to commit.'; exit 0 }
+          git commit -m 'chore(stable-channel): sync releases.win-stable.json'
+          git push
+          if ($LASTEXITCODE -ne 0) { throw 'Unable to push the stable channel feed.' }
