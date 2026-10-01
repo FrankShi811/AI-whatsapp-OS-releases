@@ -124,15 +124,7 @@ jobs:
           $existingNotes = gh release view $tag --repo '${{ github.repository }}' --json body --jq .body
           $integrity = @'
 
-          ## Release Integrity
-
-          SHA-256 checksums are included in `SHA256SUMS.txt`.
-
-          GitHub Artifact Attestations are generated and self-verified for the official Relvyn release binaries and release manifest in this public distribution workflow. This proves the identity and integrity of this publication workflow's exact artifacts; it is not cryptographic proof of the private build workflow.
-
-          Relvyn does not currently have a Windows Authenticode publisher certificate. Windows SmartScreen may still show an Unknown Publisher warning. Attestation is not a malware or license-compliance guarantee.
-
-          Technical verification: `gh attestation verify FILE -R ${{ github.repository }}`
+          安装时 Windows 可能显示“未知发布者”提示。请核对下载来源，只使用本页面提供的安装文件。
           '@
           [IO.File]::WriteAllText('release-notes.md', ($existingNotes.TrimEnd() + $integrity), [Text.UTF8Encoding]::new($false))
           gh release edit $tag --repo '${{ github.repository }}' --notes-file release-notes.md --draft=false --latest
